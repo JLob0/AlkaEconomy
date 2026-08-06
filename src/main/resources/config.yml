@@ -1,0 +1,41 @@
+# Configuracao Principal do AlkaEconomy
+#
+# Moedas sao 100% dinamicas: adicione/remova entradas aqui (ou use /alkaeconomy
+# create <id> <nome> <simbolo>) e rode /alkaeconomy reload - nao precisa recompilar
+# o plugin. O id da moeda (chave abaixo de "currencies") e o identificador usado
+# por outros plugins (EconomyManager#getBalance(uuid, "drakonio"), placeholder
+# %alkaeconomy_drakonio_formatted%, etc) - sempre em minusculas.
+#
+# Apenas UMA moeda deve ter vault-equivalent: true - e a unica que o hook do Vault
+# (usado por plugins de fora da network Alka*) consegue ler/escrever.
+currencies:
+  coins:
+    name: "Coins"
+    symbol: "$"
+    default-balance: 0.0
+    format-pattern: "#,##0.00"
+    vault-equivalent: true
+  drakonio:
+    name: "Drakonio"
+    symbol: "☠"
+    default-balance: 0.0
+    format-pattern: "#,##0.00"
+    vault-equivalent: false
+  nacar:
+    name: "Nácar"
+    symbol: "◆"
+    default-balance: 0.0
+    format-pattern: "#,##0.00"
+    vault-equivalent: false
+  escarion:
+    name: "Escarion"
+    symbol: "⚔"
+    default-balance: 0.0
+    format-pattern: "#,##0.00"
+    vault-equivalent: false
+  souls:
+    name: "Almas"
+    symbol: "❤"
+    default-balance: 0.0
+    format-pattern: "#,##0.00"
+    vault-equivalent: false

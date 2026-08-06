@@ -1,0 +1,19 @@
+name: AlkaEconomy
+version: '${version}'
+main: com.alkacode.economy.AlkaEconomyPlugin
+api-version: '1.21'
+author: MestreDEV
+description: Motor multi-moedas central da network, com moedas dinamicas configuraveis via config.yml. Sobre o AlkaCore (banco/HikariCP). Hook de Vault para a moeda vault-equivalent.
+depend: [AlkaCore]
+softdepend: [Vault, PlaceholderAPI, LuckPerms]
+
+commands:
+  alkaeconomy:
+    description: Comando administrativo do AlkaEconomy.
+    usage: /<command> <give|take|set|reload|create|list> [args]
+    aliases: [alkaeco]
+
+permissions:
+  alkaeconomy.admin:
+    description: Permite dar/tirar/definir saldo de qualquer moeda e gerenciar moedas via /alkaeconomy.
+    default: op

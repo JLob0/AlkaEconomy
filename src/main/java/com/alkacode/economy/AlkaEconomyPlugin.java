@@ -3,6 +3,7 @@ package com.alkacode.economy;
 import com.alkacode.core.api.AlkaAPI;
 import com.alkacode.core.plugin.AlkaPlugin;
 import com.alkacode.economy.command.AlkaEconomyCommand;
+import com.alkacode.economy.command.PlayerEconomyCommand;
 import com.alkacode.economy.hook.EconomyExpansion;
 import com.alkacode.economy.listener.PlayerConnectionListener;
 import com.alkacode.economy.storage.EconomyRepository;
@@ -43,6 +44,10 @@ public final class AlkaEconomyPlugin extends AlkaPlugin {
         }
 
         getCommand("alkaeconomy").setExecutor(new AlkaEconomyCommand(this, economyManager, currencyRegistry, api.getMessages()));
+
+        PlayerEconomyCommand playerEconomyCommand = new PlayerEconomyCommand(this, economyManager, api.getMessages());
+        getCommand("saldo").setExecutor(playerEconomyCommand);
+        getCommand("topmoedas").setExecutor(playerEconomyCommand);
 
         if (getServer().getPluginManager().getPlugin("Vault") != null) {
             getServer().getServicesManager().register(

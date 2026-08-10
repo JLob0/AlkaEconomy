@@ -1,5 +1,7 @@
 package com.alkacode.economy;
 
+import org.bukkit.Material;
+
 /**
  * Definicao de uma moeda carregada do config.yml (secao {@code currencies}). Ao
  * contrario do antigo enum CurrencyType, novas moedas nao exigem recompilar o
@@ -12,6 +14,7 @@ public record CurrencyDefinition(
         String symbol,
         double defaultBalance,
         String formatPattern,
-        boolean vaultEquivalent
+        boolean vaultEquivalent,
+        Material icon
 ) {
 }

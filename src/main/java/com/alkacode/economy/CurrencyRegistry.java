@@ -1,5 +1,6 @@
 package com.alkacode.economy;
 
+import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -44,7 +45,8 @@ public final class CurrencyRegistry {
                     currency.getString("symbol", ""),
                     currency.getDouble("default-balance", 0.0),
                     currency.getString("format-pattern", "#,##0.00"),
-                    currency.getBoolean("vault-equivalent", false)
+                    currency.getBoolean("vault-equivalent", false),
+                    resolveIcon(currency.getString("icon"), normalizedId)
             ));
         }
 
@@ -56,6 +58,20 @@ public final class CurrencyRegistry {
             plugin.getLogger().warning("Nenhuma moeda marcada como vault-equivalent: true - "
                     + "o hook do Vault ficara indisponivel.");
         }
+    }
+
+    /** Icone (GUIs de saldo/top) e config-driven, nunca hardcoded por id de moeda - ver icon no config.yml, default GOLD_NUGGET. */
+    private Material resolveIcon(String materialName, String currencyId) {
+        if (materialName == null || materialName.isBlank()) {
+            return Material.GOLD_NUGGET;
+        }
+        Material material = Material.matchMaterial(materialName);
+        if (material == null) {
+            plugin.getLogger().warning("Icone invalido '" + materialName + "' para a moeda '" + currencyId
+                    + "' - usando GOLD_NUGGET.");
+            return Material.GOLD_NUGGET;
+        }
+        return material;
     }
 
     public Optional<CurrencyDefinition> get(String id) {
@@ -93,9 +109,10 @@ public final class CurrencyRegistry {
         plugin.getConfig().set(path + ".default-balance", 0.0);
         plugin.getConfig().set(path + ".format-pattern", "#,##0.00");
         plugin.getConfig().set(path + ".vault-equivalent", false);
+        plugin.getConfig().set(path + ".icon", Material.GOLD_NUGGET.name());
         plugin.saveConfig();
 
-        currencies.put(normalizedId, new CurrencyDefinition(normalizedId, name, symbol, 0.0, "#,##0.00", false));
+        currencies.put(normalizedId, new CurrencyDefinition(normalizedId, name, symbol, 0.0, "#,##0.00", false, Material.GOLD_NUGGET));
         return true;
     }
 }

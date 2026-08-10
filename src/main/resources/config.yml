@@ -15,27 +15,32 @@ currencies:
     default-balance: 0.0
     format-pattern: "#,##0.00"
     vault-equivalent: true
+    icon: GOLD_NUGGET
   drakonio:
     name: "Drakonio"
     symbol: "☠"
     default-balance: 0.0
     format-pattern: "#,##0.00"
     vault-equivalent: false
+    icon: WITHER_SKELETON_SKULL
   nacar:
     name: "Nácar"
     symbol: "◆"
     default-balance: 0.0
     format-pattern: "#,##0.00"
     vault-equivalent: false
+    icon: NAUTILUS_SHELL
   escarion:
     name: "Escarion"
     symbol: "⚔"
     default-balance: 0.0
     format-pattern: "#,##0.00"
     vault-equivalent: false
+    icon: DIAMOND_SWORD
   souls:
     name: "Almas"
     symbol: "❤"
     default-balance: 0.0
     format-pattern: "#,##0.00"
     vault-equivalent: false
+    icon: GHAST_TEAR

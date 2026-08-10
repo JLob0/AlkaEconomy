@@ -12,6 +12,12 @@ commands:
     description: Comando administrativo do AlkaEconomy.
     usage: /<command> <give|take|set|reload|create|list> [args]
     aliases: [alkaeco]
+  saldo:
+    description: Mostra seu saldo em todas as moedas.
+    aliases: [saldos, bal]
+  topmoedas:
+    description: Abre o ranking (TOP 10) de jogadores por moeda.
+    aliases: [ecotop, topeco]
 
 permissions:
   alkaeconomy.admin:

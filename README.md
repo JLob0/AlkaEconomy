@@ -26,8 +26,9 @@ economia pra qualquer outro plugin da rede.
 
 ## ✨ Funcionalidades Principais
 
-- 💰 **Múltiplas moedas simultâneas** — coins, drakonio, nacar, escarion,
-  souls e outras, cada uma configurável de forma independente.
+- 💰 **Múltiplas moedas simultâneas** — Gold, Alkarion, Nácar, Escarion,
+  Soul, Ticks e Prisma, todas configuráveis de forma independente
+  (símbolo, ícone e formatação próprios).
 - ⚡ **Operações assíncronas** — consultas e alterações de saldo não travam a
   thread principal do servidor.
 - 🏆 **Ranking de moedas** — top 10 jogadores por moeda, direto no jogo.

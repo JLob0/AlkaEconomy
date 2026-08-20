@@ -12,11 +12,11 @@ package com.alkacode.economy;
  */
 public final class CurrencyType {
 
-    public static final String COINS = "coins";
-    public static final String DRAKONIO = "drakonio";
+    public static final String COINS = "gold";
+    public static final String DRAKONIO = "alkarion";
     public static final String NACAR = "nacar";
     public static final String ESCARION = "escarion";
-    public static final String SOULS = "souls";
+    public static final String SOULS = "soul";
 
     private CurrencyType() {
     }

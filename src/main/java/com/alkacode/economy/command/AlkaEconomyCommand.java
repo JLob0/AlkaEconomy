@@ -9,16 +9,20 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collectors;
 
 /**
  * Comando admin do AlkaEconomy - give/take/set operam por UUID (OfflinePlayer),
  * entao funcionam mesmo com o alvo desconectado. reload/create/list gerenciam as
  * moedas dinamicas do config.yml (ver {@link CurrencyRegistry}).
  */
-public final class AlkaEconomyCommand implements CommandExecutor {
+public final class AlkaEconomyCommand implements CommandExecutor, TabCompleter {
 
     private final JavaPlugin plugin;
     private final EconomyManager economyManager;
@@ -76,9 +80,10 @@ public final class AlkaEconomyCommand implements CommandExecutor {
 
         double amount;
         try {
-            amount = Double.parseDouble(args[3]);
+            amount = EconomyManager.parseAmount(args[3])
+                    .orElseThrow(() -> new NumberFormatException("invalid amount"));
         } catch (NumberFormatException e) {
-            messages.sendPrefixed(sender, "<red>Valor invalido: " + args[3]);
+            messages.sendPrefixed(sender, "<red>Valor invalido: " + args[3] + " (use ex.: 5000, 50K, 5M, 2B, 1T)");
             return true;
         }
         if (amount < 0) {
@@ -144,5 +149,37 @@ public final class AlkaEconomyCommand implements CommandExecutor {
 
     private void sendUsage(CommandSender sender, String label) {
         messages.sendPrefixed(sender, "<red>Uso: /" + label + " <give|take|set|reload|create|list>");
+    }
+
+    private static final List<String> SUBCOMMANDS = List.of("give", "take", "set", "reload", "create", "list");
+    private static final List<String> BALANCE_ACTIONS = List.of("give", "take", "set");
+
+    @Override
+    public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
+        if (!sender.hasPermission("alkaeconomy.admin")) {
+            return List.of();
+        }
+        if (args.length == 1) {
+            return filter(SUBCOMMANDS, args[0]);
+        }
+        String action = args[0].toLowerCase(Locale.ROOT);
+        if (BALANCE_ACTIONS.contains(action)) {
+            if (args.length == 2) {
+                return filter(onlinePlayerNames(), args[1]);
+            }
+            if (args.length == 3) {
+                return filter(currencyRegistry.getAll().stream().map(CurrencyDefinition::id).toList(), args[2]);
+            }
+        }
+        return List.of();
+    }
+
+    private List<String> onlinePlayerNames() {
+        return Bukkit.getOnlinePlayers().stream().map(Player::getName).toList();
+    }
+
+    private List<String> filter(List<String> options, String prefix) {
+        String lower = prefix.toLowerCase(Locale.ROOT);
+        return options.stream().filter(option -> option.toLowerCase(Locale.ROOT).startsWith(lower)).collect(Collectors.toList());
     }
 }

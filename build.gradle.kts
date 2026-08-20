@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "com.alkacode"
-version = "1.0.6"
+version = "1.0.8"
 
 java {
     toolchain {
@@ -30,7 +30,7 @@ dependencies {
     // conexao JDBC propria nem embarca driver, so usa java.sql.* sobre o que o
     // Core ja disponibiliza em runtime (publicado via
     // `./gradlew publishToMavenLocal` no projeto AlkaCore).
-    compileOnly("com.alkacode:AlkaCore:1.0.0")
+    compileOnly("com.alkacode:AlkaCore:1.0.3")
     compileOnly("com.github.MilkBowl:VaultAPI:1.7") {
         exclude(group = "org.bukkit", module = "bukkit")
     }

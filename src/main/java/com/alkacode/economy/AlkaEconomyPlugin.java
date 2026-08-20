@@ -43,7 +43,9 @@ public final class AlkaEconomyPlugin extends AlkaPlugin {
             connectionListener.handle(player);
         }
 
-        getCommand("alkaeconomy").setExecutor(new AlkaEconomyCommand(this, economyManager, currencyRegistry, api.getMessages()));
+        AlkaEconomyCommand alkaEconomyCommand = new AlkaEconomyCommand(this, economyManager, currencyRegistry, api.getMessages());
+        getCommand("alkaeconomy").setExecutor(alkaEconomyCommand);
+        getCommand("alkaeconomy").setTabCompleter(alkaEconomyCommand);
 
         PlayerEconomyCommand playerEconomyCommand = new PlayerEconomyCommand(this, economyManager, api.getMessages());
         getCommand("saldo").setExecutor(playerEconomyCommand);

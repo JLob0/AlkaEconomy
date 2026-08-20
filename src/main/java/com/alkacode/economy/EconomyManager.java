@@ -9,6 +9,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -157,5 +158,66 @@ public final class EconomyManager {
             return String.valueOf((long) value);
         }
         return String.format(Locale.US, "%.1f", value);
+    }
+
+    // -------------------------------------------------------------------------
+    // Parser de valores com sufixo (50K, 5M, 2B, 1T, Qa, Qi, Sx, Sp, Oc, No, Dc)
+    // -------------------------------------------------------------------------
+
+    /** Sufixos aceitos e seus multiplicadores, da menor para a maior. */
+    private static final String[][] SUFFIX_TABLE = {
+            {"K", "1000.0"},
+            {"M", "1e6"},
+            {"B", "1e9"},
+            {"T", "1e12"},
+            {"QA", "1e15"},
+            {"QD", "1e15"},
+            {"QI", "1e18"},
+            {"QN", "1e18"},
+            {"SX", "1e21"},
+            {"SP", "1e24"},
+            {"OC", "1e27"},
+            {"NO", "1e30"},
+            {"DC", "1e33"},
+    };
+
+    /**
+     * Converte uma string de valor (ex: "50K", "5M", "2.5B", "5000") num double.
+     * Sem sufixo é parse como número puro. Sufixos são case-insensitive.
+     * Retorna Optional.empty() se o valor for inválido/negativo.
+     */
+    public static Optional<Double> parseAmount(String raw) {
+        if (raw == null) return Optional.empty();
+        String input = raw.trim().toUpperCase(Locale.ROOT);
+        if (input.isEmpty()) return Optional.empty();
+
+        // pega o maior sufixo que casa no fim (maior primeiro p/ evitar "M" de "MA")
+        String numberPart = input;
+        double multiplier = 1.0;
+        for (String[] suffix : SUFFIX_TABLE) {
+            String suf = suffix[0];
+            if (input.endsWith(suf) && input.length() > suf.length()) {
+                String prefix = input.substring(0, input.length() - suf.length());
+                // garante que o prefixo é um número válido (evita "K5K")
+                try {
+                    Double.parseDouble(prefix);
+                    numberPart = prefix;
+                    multiplier = Double.parseDouble(suffix[1]);
+                    break;
+                } catch (NumberFormatException ignored) {
+                    // sufixo não se aplica ao prefixo; tenta o próximo
+                }
+            }
+        }
+
+        try {
+            double value = Double.parseDouble(numberPart) * multiplier;
+            if (value < 0 || !Double.isFinite(value)) {
+                return Optional.empty();
+            }
+            return Optional.of(value);
+        } catch (NumberFormatException e) {
+            return Optional.empty();
+        }
     }
 }

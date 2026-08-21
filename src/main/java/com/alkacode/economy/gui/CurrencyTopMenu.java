@@ -3,19 +3,21 @@ package com.alkacode.economy.gui;
 import com.alkacode.core.gui.BaseGui;
 import com.alkacode.economy.CurrencyDefinition;
 import com.alkacode.economy.EconomyManager;
-import org.bukkit.Material;
+import com.alkacode.economy.gui.config.MenuConfig;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 /**
  * TOP 10 de uma moeda. Recebe as entradas ja resolvidas (uuid/nome/saldo) prontas -
  * {@link EconomyManager#getTopBalances} e {@link org.bukkit.OfflinePlayer#getName()}
  * sao bloqueantes, entao quem abre este menu (ver {@link CurrencySelectMenu}) busca
- * tudo numa thread assincrona antes de construir esta GUI na main thread.
+ * tudo numa thread assincrona antes de construir esta GUI na main thread. Layout
+ * fixo (gui-layouts.yml, chave "currency-top-menu") - ver R8 no CLAUDE.md.
  */
 public final class CurrencyTopMenu extends BaseGui {
 
@@ -26,43 +28,50 @@ public final class CurrencyTopMenu extends BaseGui {
     private final EconomyManager economyManager;
     private final CurrencyDefinition currency;
     private final List<Entry> entries;
+    private final MenuConfig.GuiLayout layout;
 
     public CurrencyTopMenu(JavaPlugin plugin, Player player, EconomyManager economyManager,
                             CurrencyDefinition currency, List<Entry> entries) {
-        super(plugin, player, "<aqua><b>TOP " + currency.name() + "</b>", 4, "eco_top_" + currency.id());
+        super(plugin, player, MenuConfig.getInstance().title("currency-top-menu", Map.of("currency", currency.name())),
+                4, "eco_top_" + currency.id());
         this.plugin = plugin;
         this.economyManager = economyManager;
         this.currency = currency;
         this.entries = entries;
+        this.layout = MenuConfig.getInstance().layout("currency-top-menu");
     }
 
     @Override
     public void render() {
-        fillBorder(createItem(Material.GRAY_STAINED_GLASS_PANE, " "));
+        MenuConfig menu = MenuConfig.getInstance();
+        fillBorder(menu.item("currency-top-menu.border", null));
 
+        List<Integer> listSlots = layout.findSlots('0');
         if (entries.isEmpty()) {
-            setItem(13, createItem(Material.BARRIER, "<red>Nenhum dado disponivel ainda."));
+            setItem(listSlots.get(3), menu.item("currency-top-menu.empty", null));
         } else {
-            for (int i = 0; i < entries.size() && i < 10; i++) {
-                int row = i / 7;
-                int col = i % 7;
-                int slot = (1 + row) * 9 + 1 + col;
-                setItem(slot, medalItem(i + 1, entries.get(i)));
+            for (int i = 0; i < entries.size() && i < listSlots.size(); i++) {
+                setItem(listSlots.get(i), medalItem(i + 1, entries.get(i)));
             }
         }
 
-        setItem(31, createItem(Material.ARROW, "<red>Voltar"),
+        setItem(layout.firstSlot('V'), menu.item("currency-top-menu.back", null),
                 event -> new CurrencySelectMenu(plugin, player, economyManager).open());
     }
 
     private ItemStack medalItem(int position, Entry entry) {
-        String title = switch (position) {
-            case 1 -> "<#FFD700><bold>🥇 " + entry.name();
-            case 2 -> "<#AAAAAA><bold>🥈 " + entry.name();
-            case 3 -> "<#FFAA55><bold>🥉 " + entry.name();
-            default -> "<#55AAFF>" + position + "º Lugar <white>- " + entry.name();
+        MenuConfig menu = MenuConfig.getInstance();
+        Map<String, String> placeholders = Map.of("name", entry.name(), "position", String.valueOf(position));
+        String path = switch (position) {
+            case 1 -> "currency-top-menu.medal-gold";
+            case 2 -> "currency-top-menu.medal-silver";
+            case 3 -> "currency-top-menu.medal-bronze";
+            default -> "currency-top-menu.medal-other";
         };
+        String title = menu.text(path, placeholders);
         return head(entry.name(), title,
-                "<gray>Saldo: <white>" + EconomyManager.formatValue(entry.balance()) + " " + currency.symbol());
+                menu.textList("currency-top-menu.item-lore", Map.of(
+                        "balance", EconomyManager.formatValue(entry.balance()), "symbol", currency.symbol()))
+                        .toArray(new String[0]));
     }
 }

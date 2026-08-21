@@ -1,0 +1,19 @@
+# AlkaEconomy - Layouts de GUI (posicoes configuraveis)
+# So o currency-top-menu tem layout fixo aqui - balance-menu e currency-select-menu
+# tem numero de linhas VARIAVEL (depende de quantas moedas estao cadastradas), entao
+# a matematica de posicionamento continua em Java (ver BalanceMenu/CurrencySelectMenu).
+#
+# Regras (mesmo mecanismo do AlkaFish):
+#   _ = vazio (nunca preenchido por um role)
+#   0 = slot de lista dinamica (posicao no TOP 10)
+#   Letras = slots com papel fixo
+
+currency-top-menu:
+  rows: 4
+  layout:
+    - "_________"
+    - "_0000000_"
+    - "_0000000_"
+    - "____V____"
+  # 0=jogador do top 10 (ate 10; se vazio, o 4o slot da lista vira o icone de "sem dados")
+  # V=voltar(31)

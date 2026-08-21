@@ -1,0 +1,42 @@
+# AlkaEconomy - menus.yml
+# Titulos, nomes e lores das GUIs, editaveis sem recompilar. Placeholders entre {}
+# sao trocados na hora. MiniMessage. Icone/nome/simbolo de cada moeda continuam
+# vindo do proprio catalogo de moedas (CurrencyDefinition) - so o TEMPLATE do
+# rotulo/lore fica aqui, nao os dados da moeda em si (evita duplicar a fonte da
+# verdade das moedas, que ja e config-driven em config.yml).
+
+balance-menu:
+  title: "<aqua><b>Seu Saldo</b>"
+  border:
+    material: GRAY_STAINED_GLASS_PANE
+    name: " "
+  item-name: "<white>{name} <gray>({symbol})"
+  item-lore:
+    - "<gray>Saldo: <white>{balance} {symbol}"
+
+currency-select-menu:
+  title: "<aqua><b>TOP por Moeda</b>"
+  border:
+    material: GRAY_STAINED_GLASS_PANE
+    name: " "
+  item-name: "<white>{name} <gray>({symbol})"
+  item-lore:
+    - "<gray>Clique para ver o TOP 10."
+
+currency-top-menu:
+  title: "<aqua><b>TOP {currency}</b>"
+  border:
+    material: GRAY_STAINED_GLASS_PANE
+    name: " "
+  empty:
+    material: BARRIER
+    name: "<red>Nenhum dado disponivel ainda."
+  medal-gold: "<#FFD700><bold>🥇 {name}"
+  medal-silver: "<#AAAAAA><bold>🥈 {name}"
+  medal-bronze: "<#FFAA55><bold>🥉 {name}"
+  medal-other: "<#55AAFF>{position}º Lugar <white>- {name}"
+  item-lore:
+    - "<gray>Saldo: <white>{balance} {symbol}"
+  back:
+    material: ARROW
+    name: "<red>Voltar"

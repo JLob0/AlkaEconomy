@@ -3,18 +3,20 @@ package com.alkacode.economy.gui;
 import com.alkacode.core.gui.BaseGui;
 import com.alkacode.economy.CurrencyDefinition;
 import com.alkacode.economy.EconomyManager;
+import com.alkacode.economy.gui.config.MenuConfig;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Selecao de moeda pra abrir o TOP 10 (/topmoedas) - so lista as definicoes de
  * moeda (sem custo de banco); a busca do TOP em si so acontece ao clicar, e roda
- * fora da main thread (ver {@link #openTop}).
+ * fora da main thread (ver {@link #openTop}). Mesma nota do {@link BalanceMenu}
+ * sobre numero de linhas variavel continuar em Java.
  */
 public final class CurrencySelectMenu extends BaseGui {
 
@@ -22,7 +24,8 @@ public final class CurrencySelectMenu extends BaseGui {
     private final EconomyManager economyManager;
 
     public CurrencySelectMenu(JavaPlugin plugin, Player player, EconomyManager economyManager) {
-        super(plugin, player, "<aqua><b>TOP por Moeda</b>", rows(economyManager.getCurrencies().size()), "eco_top_select");
+        super(plugin, player, MenuConfig.getInstance().title("currency-select-menu", null),
+                rows(economyManager.getCurrencies().size()), "eco_top_select");
         this.plugin = plugin;
         this.economyManager = economyManager;
     }
@@ -33,7 +36,8 @@ public final class CurrencySelectMenu extends BaseGui {
 
     @Override
     public void render() {
-        fillBorder(createItem(Material.GRAY_STAINED_GLASS_PANE, " "));
+        MenuConfig menu = MenuConfig.getInstance();
+        fillBorder(menu.item("currency-select-menu.border", null));
 
         List<CurrencyDefinition> currencies = List.copyOf(economyManager.getCurrencies());
         int innerRows = (inventory.getSize() / 9) - 2;
@@ -42,9 +46,10 @@ public final class CurrencySelectMenu extends BaseGui {
             int row = i / 7;
             int col = i % 7;
             int slot = (1 + row) * 9 + 1 + col;
+            Map<String, String> placeholders = Map.of("name", currency.name(), "symbol", currency.symbol());
             setItem(slot, createItem(currency.icon(),
-                    "<white>" + currency.name() + " <gray>(" + currency.symbol() + ")",
-                    "<gray>Clique para ver o TOP 10."),
+                    menu.text("currency-select-menu.item-name", placeholders),
+                    menu.textList("currency-select-menu.item-lore", placeholders).toArray(new String[0])),
                     event -> openTop(currency));
         }
     }

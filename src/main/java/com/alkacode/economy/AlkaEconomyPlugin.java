@@ -4,6 +4,7 @@ import com.alkacode.core.api.AlkaAPI;
 import com.alkacode.core.plugin.AlkaPlugin;
 import com.alkacode.economy.command.AlkaEconomyCommand;
 import com.alkacode.economy.command.PlayerEconomyCommand;
+import com.alkacode.economy.gui.config.MenuConfig;
 import com.alkacode.economy.hook.EconomyExpansion;
 import com.alkacode.economy.listener.PlayerConnectionListener;
 import com.alkacode.economy.storage.EconomyRepository;
@@ -31,6 +32,7 @@ public final class AlkaEconomyPlugin extends AlkaPlugin {
     protected void onPluginEnable() {
         AlkaAPI api = getAlkaAPI();
 
+        MenuConfig.init(this);
         currencyRegistry = new CurrencyRegistry(this);
         economyRepository = new EconomyRepository(api.getDatabase(), getLogger());
         economyManager = new EconomyManager(this, economyRepository, currencyRegistry);
